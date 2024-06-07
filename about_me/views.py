@@ -1,22 +1,32 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from about_me.models import Book
 
 
-def about_me_view(request):
+def book_list_view(request):
     if request.method == 'GET':
-        return HttpResponse("Меня зовут [Орозбеков Мурас], мне [17] лет.")
-
-
-def hobby_view(request):
-    if request.method == 'GET':
-        return HttpResponse('Любимое хобби это играть футбол.')
+        query = Book.objects.filter().order_by('-id')
+        return render(
+            request,
+            template_name='blog/book_list.html',
+            context={
+                'book': query
+            }
+        )
     
 
-def time_view(request):
+def book_detail_view(request, id):
     if request.method == 'GET':
-        return HttpResponse(f"{datetime.datetime.now()}")
+        book_id = get_object_or_404(Book, id=id)
+        return render(
+            request,
+            template_name='blog/book_detail_.html',
+            context={
+                'book_id': book_id
+            }
+        )
     
 
-def random_numbers_view(request):
-    if request.method == 'GET':
-        return HttpResponse(random.randint(1, 100))
+        
+             
+             
