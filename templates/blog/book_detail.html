@@ -1,0 +1,18 @@
+{% load static %}
+{% include "./header.html" %}
+<link rel="stylesheet" href="{% static 'css/book_list.css' %}">
+<center>
+<div class="card" style="width: 18rem;">
+  <img src="{{ i.image.url }}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <p class="card-text">{{ book_id.title }}</p>
+      <p class="card-text">{{ book_id.author }}</p>
+      <p class="card-text">{{ book_id.content }}</p>
+      <p class="card-text">{{ book_id.review }}</p>
+      <p class="card-text">{{ book_id.part }}</p>
+      <p class="card-text">{{ book_id.page }}</p>
+      <p class="card-text">{{ book_id.publication_date }}</p>
+  </div>
+</div>
+</center>
+{% include "./footer.html" %}

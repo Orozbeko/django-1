@@ -1,6 +1,12 @@
 from django.db import models
 
-# Create your models here.
+
+class Poster(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='sliders/')
+
+    def __str__(self):
+        return self.name
 
 class Book(models.Model):
 
@@ -30,5 +36,30 @@ class Book(models.Model):
     class Meta:
         verbose_name = 'Книгу'
         verbose_name_plural = 'Книги'
+
+class Comment(models.Model):
+    book = models.ForeignKey(Book, related_name='comments', on_delete=models.CASCADE)
+    user_name = models.CharField(max_length=100)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Comment by {self.user_name} on {self.book}'
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class Books(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=200)
+    published_date = models.DateField()
+    tags = models.ManyToManyField(Tag, related_name='books')
+
+    def __str__(self):
+        return self.title
 
 

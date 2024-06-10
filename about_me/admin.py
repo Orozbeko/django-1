@@ -1,7 +1,9 @@
 from django.contrib import admin
-from about_me.models import Book
+from .models import Book, Comment, Tag,Books,Poster
 
 admin.site.register(Book)
-
-
+admin.site.register(Comment)
+admin.site.register(Tag)
+admin.site.reqister(Books)
+admin.site.reqister(Poster)
 # Register your models here.
