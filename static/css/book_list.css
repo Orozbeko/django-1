@@ -11,3 +11,8 @@ body{
 .name_detail{
     color: green;
 }
+
+.add_book{
+    color:white;
+    text-decoration: none;
+}

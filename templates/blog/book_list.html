@@ -6,18 +6,25 @@
   <h1>{{ i.name }}</h1>
   <img src="{{i.image.url}}" alt="">
   {% endfor %}
-    <h1> class="h1_class">Список книг</h1>
 
+   <h1 class="h1_class">Список книг</h1>
+    <button type="button" class="btn btn-secondary">
+        <a href="/create book/" class="add_book">Добавить книгу</a>
+    </button>
+    <br><br>
 
-{% for i in book %}
-<div class="card" style="width: 18rem;">
-  <img src="{{ i.image.url }}" class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">{{ i.title }}</h5>
-    <p class="card-text">{{ i.genres_of_books }}</p>
-    <a href="/books/{{ i.id }}" class="btn btn-primary">Перейти куда-нибудь</a>
+  {% for i in book %}
+  <div class="card" style="width: 18rem;">
+    <img src="{{ i.image.url }}" class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">{{ i.title }}</h5>
+        <p class="card-text">{{ i.genres_of_books }}</p>
+        <a href="/books/{{ i.id }}" class="btn btn-primary">Подробнее</a>
+        <a href="/books/{{ i.id }}/delete/" class="btn btn-primary">Удалить</a>
+        <br><br>
+        <a href="/books/{{ i.id }}/update/" class="btn btn-primary">Редактировать</a>
+    </div>
   </div>
-</div>
 {% endfor %}
 </center>
 
