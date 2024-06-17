@@ -1,87 +1,105 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from about_me.models import Book,Poster,Books,Tag
+from django.views import generic
 from . import forms
 
 
-def edit_book_view(request, id):
-    book_id = get_object_or_404(Books, id=id)
-    if request.method == 'POST':
-        form = forms.BookForm(request.POST, instance=book_id)
-        if form.is_valid():
-            form.save()
-            return HttpResponse('<h3>Book successfully updated!</h3>'
-                                '<a href="books/">На список книг</a>')
+class SearchListView(generic.ListView):
+    template_name = "blog/book_list.html"
+    context_object_name = 'book'
+    paginate_by = 5
 
-    else:
-        form = forms.BookForm(instance=book_id)
-    return render(request, template_name='blog/edit_book.html',
-                  context={
-                      'form': form,
-                      'book_id': book_id
-                  })
+    def get_queryset(self):
+        return Book.objects.filter(title__icontains=self.request.GET.get('pog')).order_by('-id')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pog'] = self.request.GET.get('pog')
+        return context
 
 
-def drop_book_view(request, id):
-    book_id = get_object_or_404(Book, id=id)
-    book_id.delete()
-    return HttpResponse('Book deleted <a href="books/">На список книг</a>')
+class EditBookView(generic.UpdateView):
+    template_name = 'blog/edit_book.html'
+    form_class = forms.BookForm
+    success_url = '/books/'
+
+    def get_object(self, **kwargs):
+        book_id = self.kwargs.get('id')
+        return get_object_or_404(Book, id=book_id)
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super(EditBookView, self).form_valid(form=form)
 
 
-def create_book_view(request):
-    if request.method == "POST":
-        form = forms.BookForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponse('<h3> Book successfully created!</h3>'
-                                '<a href="books/">На список книг</a>')
-    else:
-        form =forms.BookForm()
-    return render(request, template_name='blog/create_book.html',
-                  context={'form': forms})
+class BookDeleteView(generic.DeleteView):
+    template_name = 'blog/confirm_delete.html'
+    success_url = '/books/'
+
+    def get_object(self, **kwargs):
+        book_id = self.kwargs.get('id')
+        return get_object_or_404(Book, id=book_id)
+
+
+class CreateBookView(generic.CreateView):
+    template_name = 'blog/create_book.html'
+    form_class = forms.BookForm
+    success_url = '/books/'
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super(CreateBookView, self).form_valid(form=form)
 
 
 
+class BooklistView(generic.ListView):
+    template_name = "blog/book_list.html"
+    context_object_name = "book"
+    model = Book
+    ordering = ['-id']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['posters'] = Poster.objects.order_by('-id')
+        context['books'] = Books.objects.order_by('-id')
+        return context
+
+class BookDetailView(generic.DetailView):
+    template_name = 'blog/book_detail.html'
+    context_object_name = 'book_id'
+
+    def get_object(self, **kwargs):
+        book_id = self.kwargs.get('id')
+        return get_object_or_404(Book, id=book_id)
 
 
-def book_list_view(request):
-    if request.method == 'GET':
-        query = Book.objects.filter().order_by('-id')
-        posters = Poster.objects.filter().order_by('-id')
-        books = Books.objects.filter().order_by('-id')
-        return render(
-            request,
-            template_name='blog/book_list.html',
-            context={
-                'book': query,
-                'posters': posters,
-                'books': books
-            }
-        )
+class BookListByTagView(generic.ListView):
+    template_name = 'book_list.html'
+    context_object_name = 'books'
 
+    def get_queryset(self):
+        tag_name = self.kwargs['tag_name']
+        tag = get_object_or_404(Tag, name=tag_name)
+        return tag.books.all()
 
-def book_detail_view(request, id):
-    if request.method == 'GET':
-        book_id = get_object_or_404(Book, id=id)
-        return render(
-            request,
-            template_name='blog/book_detail.html',
-            context={
-                'book_id': book_id
-            }
-        )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag_name = self.kwargs['tag_name']
+        tag = get_object_or_404(Tag, name=tag_name)
+        context['tag'] = tag
+        return context
 
-def book_list(request):
-    age_category = request.GET.get('age_category')
-    if age_category:
-        books = Book.objects.filter(tags__name=age_category)
-    else:
-        books = Book.objects.all()
-    return render(request, 'books/book_list.html', {'books': books, 'age_category': age_category})
+class BookListTagView(generic.ListView):
+    model = Tag
+    template_name = 'book_list.html'
+    context_object_name = 'tag'
+    slug_field = 'name'
+    slug_url_kwarg = 'tag_name'
 
-def book_list_by_tag(request, tag_name):
-    tag = Tag.objects.get(name=tag_name)
-    books = tag.books.all()
-    return render(request, 'book_list.html', {'tag': tag, 'books': books})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['books'] = self.object.books.all()
+        return context
 
 

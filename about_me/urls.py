@@ -2,13 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('books/', views.book_list_view),
-    path('book/<int:id>/', views.book_detail_view),
-    path('book_list/', views.book_list_view, name='book_list'),
-    path('tags/<str:tag_name>/', views.book_list_by_tag, name='book_list_by_tag'),
-    path('create book/', views.create_book_view),
-    path('book/<int:id>/delete/', views.drop_book_view),
-    path('book/<int:id>/update/', views.edit_book_view),
-
-
+    path('books/', views.BooklistView.as_view()),
+    path('book/<int:id>/', views.BookDetailView.as_view()),
+    path('book_list/', views.BookListByTagView, name='book_list'),
+    path('tags/<str:tag_name>/', views.BookListTagView, name='book_list_by_tag'),
+    path('create book/', views.CreateBookView.as_view()),
+    path('book/<int:id>/delete/', views.BookDeleteView.as_view()),
+    path('book/<int:id>/update/', views.EditBookView.as_view()),
+    path('search/', views.SearchListView.as_view(), title='search'),
 ]

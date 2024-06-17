@@ -1,19 +1,16 @@
 {% load static %}
 {% include "../header.html" %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<link rel="stylesheet" href="{% static 'css/crud_style.css' %} ">
+<form class="transparent" method="POST" enctype="multipart/form-data" >
+<div class="form-inner">
 <h1>Изменить данные о книге</h1>
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Изменить</button>
-    <button type="reset">Очистить</button>
+<input type="submit" value="Изменить">
+<input type="reset" value="Очистить">
+</div>
 </form>
-</body>
-</html>
+
 
 {% include "../footer.html" %}
