@@ -31,9 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'about_me',
-    'hobby_view',
-    'time_view',
-    'random_numbers_view',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -44,6 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.middlewares.AgeExperienceMiddleware',
 ]
 
 ROOT_URLCONF = 'books.urls'

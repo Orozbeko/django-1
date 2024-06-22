@@ -1,0 +1,20 @@
+<ul>
+    {% for i in object_list %}
+    <li>
+        <h1>+996 - {{ i.phone_number }}</h1>
+        <p> -Адрес {{ i.address }}</p>
+        <p> {{ i.first_name }}</p>
+        <p> Дата рождения - {{ i.date_of_birth }}</p>
+        {% if i.experience %}
+        <p>Вы приняты на работу: {{ i.experience }}</p>
+        {% else %}
+        <p>Вы не приняты на работу</p>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+
+<form action="{% url 'users:login' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Выйти из аккаунта</button>
+</form>
